@@ -1,15 +1,50 @@
-function getPlayerChoice() {
-  let choice = prompt("Please enter either 'rock', 'paper', or 'scissors'");
-  while (!["rock", "paper", "scissors"].includes(choice)) {
-    choice = prompt("Please enter either 'rock', 'paper', or 'scissors'");
-  }
-  return choice[0].toUpperCase() + choice.slice(1);
-}
+const game = {
+  playerScore: 0,
+  computerScore: 0,
+};
+
+const buttons = document.querySelectorAll("div.player-buttons button");
+buttons.forEach((button) => {
+  button.addEventListener("click", () => {
+    playRound(button.textContent, getComputerChoice());
+  });
+});
 
 function getComputerChoice() {
   const options = ["Rock", "Paper", "Scissors"];
   const randomIndex = Math.floor(Math.random() * 3);
   return options[randomIndex];
+}
+
+function printRoundResults(str) {
+  document.querySelector("p.round-results").textContent = str;
+}
+
+function updateScores(result) {
+  switch (result) {
+    case "win":
+      game.playerScore++;
+      break;
+    case "lose":
+      game.computerScore++;
+      break;
+    case "tie":
+      break;
+  }
+  document.querySelector("p.player-score span").textContent =
+    game.playerScore.toString();
+  document.querySelector("p.computer-score span").textContent =
+    game.computerScore.toString();
+}
+
+function checkIfGameEnded() {
+  if (game.playerScore === 5 || game.computerScore === 5) {
+    buttons.forEach((button) => button.setAttribute("disabled", ""));
+    document.querySelector("h1").textContent =
+      game.playerScore === 5
+        ? "You win! Refresh page to play again."
+        : "The computer wins! Refresh page to play again.";
+  }
 }
 
 function playRound(playerSelection, computerSelection) {
@@ -21,37 +56,49 @@ function playRound(playerSelection, computerSelection) {
   if (playerSelection === "Rock") {
     switch (computerSelection) {
       case "Rock":
-        return TIE;
+        printRoundResults(TIE);
+        updateScores("tie");
+        break;
       case "Paper":
-        return LOSE;
+        printRoundResults(LOSE);
+        updateScores("lose");
+        break;
       case "Scissors":
-        return WIN;
+        printRoundResults(WIN);
+        updateScores("win");
+        break;
     }
   } else if (playerSelection === "Paper") {
     switch (computerSelection) {
       case "Rock":
-        return WIN;
+        printRoundResults(WIN);
+        updateScores("win");
+        break;
       case "Paper":
-        return TIE;
+        printRoundResults(TIE);
+        updateScores("tie");
+        break;
       case "Scissors":
-        return LOSE;
+        printRoundResults(LOSE);
+        updateScores("lose");
+        break;
     }
   } else {
     switch (computerSelection) {
       case "Rock":
-        return LOSE;
+        printRoundResults(LOSE);
+        updateScores("lose");
+        break;
       case "Paper":
-        return WIN;
+        printRoundResults(WIN);
+        updateScores("win");
+        break;
       case "Scissors":
-        return TIE;
+        printRoundResults(TIE);
+        updateScores("tie");
+        break;
     }
   }
-}
 
-function game() {
-  console.log(playRound(getPlayerChoice(), getComputerChoice()));
-  console.log(playRound(getPlayerChoice(), getComputerChoice()));
-  console.log(playRound(getPlayerChoice(), getComputerChoice()));
-  console.log(playRound(getPlayerChoice(), getComputerChoice()));
-  console.log(playRound(getPlayerChoice(), getComputerChoice()));
+  checkIfGameEnded();
 }
